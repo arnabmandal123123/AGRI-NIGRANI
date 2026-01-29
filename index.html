@@ -3977,23 +3977,46 @@
   <!-- language.js removed (not provided). If you need localization, add language.js back into the web root. -->
   <script>
     // ========== MQTT Configuration ==========
-    const mqtt_broker = "test.mosquitto.org";
-    const mqtt_port = 8080; // WebSocket port
-    const mqtt_client_id = "WebAppClient_" + Math.random().toString(16).substr(2, 8);
-    const sensor_topic = "esp32/cam/sensors";
-    const command_topic = "esp32/cam/command";
+    const mqtt_broker = 'test.mosquitto.org';
+    // Use secure websocket (WSS) when page is served over HTTPS to avoid Mixed Content
+    const pageIsSecure = location.protocol === 'https:';
+    const mqtt_port = pageIsSecure ? 8081 : 8080; // 8081 => wss, 8080 => ws
+    const mqtt_path = '/mqtt';
+    const mqtt_use_ssl = pageIsSecure;
+    const mqtt_client_id = 'WebAppClient_' + Math.random().toString(16).substr(2, 8);
+    const sensor_topic = 'esp32/cam/sensors';
+    const command_topic = 'esp32/cam/command';
 
     let pumpOn = false;
 
-    // Create a client instance
-    const client = new Paho.MQTT.Client(mqtt_broker, mqtt_port, mqtt_client_id);
+    // Client variable will be created by the connect routine below
+    let client = null;
 
-    // Set callback handlers
-    client.onConnectionLost = onConnectionLost;
-    client.onMessageArrived = onMessageArrived;
+    // Attempt to connect to an MQTT broker with optional fallback
+    function tryConnect(brokerHost, port, path, useSSL, attemptFallback = true) {
+      console.log('MQTT connecting to', (useSSL ? 'wss' : 'ws') + '://' + brokerHost + ':' + port + path);
 
-    // Connect the client
-    client.connect({ onSuccess: onConnect });
+      // (re)create client for this connection attempt
+      client = new Paho.MQTT.Client(brokerHost, Number(port), path, mqtt_client_id);
+      client.onConnectionLost = onConnectionLost;
+      client.onMessageArrived = onMessageArrived;
+
+      client.connect({
+        onSuccess: onConnect,
+        onFailure: function(err) {
+          console.error('MQTT connect failed', err);
+          // If this was a WSS attempt and fallback is allowed, try a known public WSS broker
+          if (useSSL && attemptFallback) {
+            console.log('Attempting fallback WSS broker: broker.emqx.io:8084');
+            tryConnect('broker.emqx.io', 8084, '/mqtt', true, false);
+          }
+        },
+        useSSL: useSSL
+      });
+    }
+
+    // Start initial connect (use WSS on HTTPS pages)
+    tryConnect(mqtt_broker, mqtt_port, mqtt_path, mqtt_use_ssl);
 
     function onConnect() {
       console.log("Connected to MQTT broker");
