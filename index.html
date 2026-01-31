@@ -47,42 +47,6 @@
       --font-sans: 'Google Sans', 'Roboto', sans-serif;
       --font-body: 'Roboto', sans-serif;
       --transition: all 0.2s cubic-bezier(0.2, 0.0, 0, 1.0);
-
-      /* Extra accents used for theme previews */
-      --accent-1: #ffd54f;
-      --accent-2: #8ad4ff;
-      --muted: #6b6b6b;
-    }
-
-    /* Theme variants (toggle body class 'theme-forest', 'theme-ocean', 'theme-dark') */
-    .theme-forest {
-      --primary: #2e7d32;
-      --primary-container: #cfe8d2;
-      --secondary: #60ad5e;
-      --surface: #f6fbf6;
-      --surface-container: #ecf6ed;
-      --on-surface: #08320b;
-      --outline: #9eb89a;
-    }
-
-    .theme-ocean {
-      --primary: #006994;
-      --primary-container: #cfeefb;
-      --secondary: #00a6d6;
-      --surface: #f3fbff;
-      --surface-container: #eaf8ff;
-      --on-surface: #021f2a;
-      --outline: #9fcbe0;
-    }
-
-    .theme-dark {
-      --primary: #7aa7ff;
-      --primary-container: #0f2a4d;
-      --secondary: #48a9ff;
-      --surface: #0b1220;
-      --surface-container: #0f1724;
-      --on-surface: #e6eef8;
-      --outline: #2b3a4a;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -103,12 +67,11 @@
     }
     body {
       font-family: var(--font-body);
-      background-color: var(--surface);
+      background-color: #000000;
       color: var(--on-surface);
       padding: 24px;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
-      transition: background-color 320ms ease, color 320ms ease;
     }
     .wrap {
       max-width: 1200px;
@@ -166,39 +129,15 @@
     .hero h1 {
       font-family: var(--font-sans);
       font-size: 28px;
-      font-weight: 600;
+      font-weight: 400;
       margin: 8px 0 4px;
-      color: var(--on-surface);
-      letter-spacing: -0.2px;
+      color: white;
     }
     .hero p {
       font-size: 15px;
-      color: rgba(0,0,0,0.6);
+      color: rgba(255,255,255,0.9);
       margin: 0;
       font-weight: 300;
-    }
-
-    .theme-switcher {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    .theme-btn {
-      background: transparent;
-      border-radius: 10px;
-      padding: 6px 10px;
-      border: 1px solid rgba(0,0,0,0.06);
-      cursor: pointer;
-      color: var(--on-surface);
-      font-size: 13px;
-      min-width: 62px;
-    }
-    .theme-btn.active {
-      box-shadow: 0 8px 20px rgba(16,24,40,0.08);
-      transform: translateY(-2px);
-      border-color: var(--primary);
-      background: linear-gradient(90deg, var(--primary) 0%, rgba(0,0,0,0.03) 100%);
-      color: var(--on-primary);
     }
     .ip-config {
       background: rgba(255, 255, 255, 0.15);
@@ -792,12 +731,6 @@
                 <div id="languageSelector" style="display: flex; gap: 8px; align-items: center;">
                   <button class="btn sec" onclick="translateToBangla()" title="Switch to Bangla">বাংলা</button>
                   <button class="btn sec" onclick="translateToEnglish()" title="Switch to English">ENGLISH</button>
-                  <div id="themeSelector" class="theme-switcher" role="toolbar" aria-label="Theme selector" style="margin-left:12px;">
-                    <button class="btn sec theme-btn" data-theme="" onclick="setTheme('')" title="Default">Default</button>
-                    <button class="btn sec theme-btn" data-theme="forest" onclick="setTheme('forest')" title="Forest">🌿</button>
-                    <button class="btn sec theme-btn" data-theme="ocean" onclick="setTheme('ocean')" title="Ocean">🌊</button>
-                    <button class="btn sec theme-btn" data-theme="dark" onclick="setTheme('dark')" title="Dark">🌙</button>
-                  </div>
                 </div>
               </div>
             </section>
