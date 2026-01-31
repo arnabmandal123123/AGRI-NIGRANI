@@ -427,6 +427,22 @@ void handleStream() {
   client.write(HEADER, sizeof(HEADER) - 1);
 
   while (client.connected()) {
+    // Poll MQTT and Serial to keep things responsive during streaming
+    if (mqttClient.connected()) {
+      mqttClient.loop();
+    }
+    if (Serial.available()) {
+      String data = Serial.readStringUntil('\n');
+      data.trim();
+      if (data.length() > 0) {
+        lastArduinoSeen = millis();
+        if (!arduinoConnected) {
+          arduinoConnected = true;
+          if (mqttClient.connected()) mqttClient.publish(status_topic, "ARDUINO_CONNECTED");
+        }
+      }
+    }
+
     camera_fb_t* fb = esp_camera_fb_get();
     if (!fb) {
       LOG_DBG("Camera frame capture failed. Retrying...\n");
@@ -450,6 +466,8 @@ void handleStream() {
         int r = client.write(data + wroteImg, toWrite);
         if (r > 0) { wroteImg += r; remaining -= r; }
         else break;
+        // Allow MQTT to process messages during large image transfers
+        if (mqttClient.connected()) mqttClient.loop();
       }
       int wroteTail = client.write("\r\n", 2);
       LOG_DBG("Wrote header=%d/%d img=%d/%u tail=%d/2\n", wroteHdr, headerLen, wroteImg, (unsigned)fb->len, wroteTail);
