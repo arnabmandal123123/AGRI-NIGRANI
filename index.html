@@ -851,6 +851,7 @@ function calculateConsensus(results) {
         try {
           const results = await Promise.all(activeModels.map(model => infer(base64Image, model)));
           const consensusData = calculateConsensus(results);
+          geminiRecommendation = null; // Set to null for local analysis
           showMultiModelResults(results, null, base64Image, consensusData);
         } catch (e) {
           document.getElementById('res').innerHTML = `<div class="rc"><div class="t">Failed<span class="badge err">Error</span></div><p style="color: var(--on-surface-variant); font-size: 14px;">${e.message}</p></div>`;
@@ -912,6 +913,7 @@ function clearAllData() {
     let aiEnabled = false;
     let firebaseReady = false;
     let firebaseReadyPromise = null;
+    let geminiRecommendation = null;
 
     try {
       firebase.initializeApp(firebaseConfig);
