@@ -47,6 +47,42 @@
       --font-sans: 'Google Sans', 'Roboto', sans-serif;
       --font-body: 'Roboto', sans-serif;
       --transition: all 0.2s cubic-bezier(0.2, 0.0, 0, 1.0);
+
+      /* Extra accents used for theme previews */
+      --accent-1: #ffd54f;
+      --accent-2: #8ad4ff;
+      --muted: #6b6b6b;
+    }
+
+    /* Theme variants (toggle body class 'theme-forest', 'theme-ocean', 'theme-dark') */
+    .theme-forest {
+      --primary: #2e7d32;
+      --primary-container: #cfe8d2;
+      --secondary: #60ad5e;
+      --surface: #f6fbf6;
+      --surface-container: #ecf6ed;
+      --on-surface: #08320b;
+      --outline: #9eb89a;
+    }
+
+    .theme-ocean {
+      --primary: #006994;
+      --primary-container: #cfeefb;
+      --secondary: #00a6d6;
+      --surface: #f3fbff;
+      --surface-container: #eaf8ff;
+      --on-surface: #021f2a;
+      --outline: #9fcbe0;
+    }
+
+    .theme-dark {
+      --primary: #7aa7ff;
+      --primary-container: #0f2a4d;
+      --secondary: #48a9ff;
+      --surface: #0b1220;
+      --surface-container: #0f1724;
+      --on-surface: #e6eef8;
+      --outline: #2b3a4a;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -67,11 +103,12 @@
     }
     body {
       font-family: var(--font-body);
-      background-color: #000000;
+      background-color: var(--surface);
       color: var(--on-surface);
       padding: 24px;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
+      transition: background-color 320ms ease, color 320ms ease;
     }
     .wrap {
       max-width: 1200px;
@@ -95,6 +132,12 @@
       100% {
         background-position: 0% 50%;
       }
+    }
+
+    /* Generic spinner animation used by inline spinners */
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
     .hero {
       background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
@@ -123,15 +166,39 @@
     .hero h1 {
       font-family: var(--font-sans);
       font-size: 28px;
-      font-weight: 400;
+      font-weight: 600;
       margin: 8px 0 4px;
-      color: white;
+      color: var(--on-surface);
+      letter-spacing: -0.2px;
     }
     .hero p {
       font-size: 15px;
-      color: rgba(255,255,255,0.9);
+      color: rgba(0,0,0,0.6);
       margin: 0;
       font-weight: 300;
+    }
+
+    .theme-switcher {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .theme-btn {
+      background: transparent;
+      border-radius: 10px;
+      padding: 6px 10px;
+      border: 1px solid rgba(0,0,0,0.06);
+      cursor: pointer;
+      color: var(--on-surface);
+      font-size: 13px;
+      min-width: 62px;
+    }
+    .theme-btn.active {
+      box-shadow: 0 8px 20px rgba(16,24,40,0.08);
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      background: linear-gradient(90deg, var(--primary) 0%, rgba(0,0,0,0.03) 100%);
+      color: var(--on-primary);
     }
     .ip-config {
       background: rgba(255, 255, 255, 0.15);
@@ -187,11 +254,49 @@
       box-shadow: var(--elevation-2);
       transform: translateY(-1px);
     }
+
+    /* Local image controls */
+    .local-image-controls .btn { padding: 8px 12px; font-size: 14px; }
+
+    /* Batch progress indicator */
+    .batch-progress { width: 100%; max-width: 420px; }
+    .batch-progress .bar { transition: width 220ms cubic-bezier(.2,0,.2,1); box-shadow: 0 2px 6px rgba(0,0,0,0.25); height: 8px; border-radius: 6px; }
+    .batch-progress .label { margin-top: 6px; font-size: 13px; color: var(--on-surface-variant); }
+
     .status {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 16px;
     }
+
+    /* Toast notifications */
+    .toast {
+      min-width: 220px;
+      max-width: 360px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+      font-size: 14px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 240ms ease, transform 240ms ease;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.info { background: rgba(26,115,232,0.95); }
+    .toast.success { background: rgba(20,160,80,0.95); }
+    .toast.error { background: rgba(200,60,60,0.95); }
+    .toast .label { font-weight: 500; }
+    .toast .muted { font-size: 12px; opacity: 0.9; }
+
+    /* Compact resync progress indicator */
+    .resync-progress { display: inline-flex; gap: 8px; align-items: center; }
+    .resync-bar { width: 120px; height: 8px; background: rgba(255,255,255,0.06); border-radius: 6px; overflow: hidden; }
+    .resync-bar-fill { height: 100%; background: linear-gradient(90deg,var(--primary),#0b4eb3); transition: width 250ms cubic-bezier(.2,0,.2,1); }
+    .resync-text { font-size: 12px; color: var(--on-surface-variant); min-width: 40px; text-align: right; }
     .chip {
       background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(10px);
@@ -267,6 +372,74 @@
       gap: 12px;
       flex-wrap: wrap;
     }
+
+    /* Live stream IP input + connect button layout */
+    .ip-config {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      background: #000; /* Black background for the IP area */
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      box-shadow: var(--elevation-1);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+    .ip-config span.translatable { margin-right: 6px; }
+    .ip-config input {
+      width: 220px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: #0b0b0b;
+      color: #fff;
+      font-size: 14px;
+    }
+    .ip-config input::placeholder { color: rgba(255,255,255,0.4); }
+    .ip-config button {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      background: var(--primary);
+      color: var(--on-primary);
+      cursor: pointer;
+      font-weight: 500;
+      box-shadow: none;
+    }
+    .ip-config button:hover { background: #0b4eb3; }
+
+    /* Ensure conn-status stands out on black background */
+    .conn-status { color: rgba(255,255,255,0.8); }
+    .conn-status.success { color: var(--success); background: rgba(20,108,46,0.08); }
+    .conn-status.error { color: var(--error); background: rgba(179,38,30,0.08); }
+
+    /* Connection status pill */
+    .conn-status {
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: var(--transition);
+      color: var(--on-surface-variant);
+    }
+    .conn-status::before {
+      content: '';
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      background: transparent;
+    }
+    .conn-status.success { color: var(--success); background: rgba(20,108,46,0.08); }
+    .conn-status.success::before { background: var(--success); box-shadow: 0 0 0 4px rgba(20,108,46,0.08); }
+    .conn-status.error { color: var(--error); background: rgba(179,38,30,0.08); }
+    .conn-status.error::before { background: var(--error); box-shadow: 0 0 0 4px rgba(179,38,30,0.08); }
+    .conn-status.warn { color: var(--warn); background: rgba(239,108,0,0.08); }
+    .conn-status.warn::before { background: var(--warn); box-shadow: 0 0 0 4px rgba(239,108,0,0.08); }
+
     .btn {
       border: none;
       border-radius: 24px;
@@ -430,17 +603,7 @@
       gap: 16px;
       margin-top: 16px;
     }
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 16px;
-      margin-top: 16px;
-    }
-    .analytics-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
+    /* Analytics layout rules removed (stats-grid, analytics-grid) */
 
     @media (max-width: 992px) {
       section.grid {
@@ -472,7 +635,7 @@
       h2 {
         font-size: 1.25rem; /* 20px */
       }
-      .grid, .analytics-grid, .sg, .stats-grid, .status {
+      .grid, .sg, .status {
         grid-template-columns: 1fr;
         gap: 16px;
       }
@@ -565,6 +728,56 @@
         width: 100%;
       }
 
+      /* Ensure stream/local images are responsive to small screens */
+      .frame img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      /* Wrap Analysis Log controls on small screens to avoid horizontal overflow */
+      .analysis-controls {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      /* Compact menu removed - keep responsive controls */
+
+      /* Allow buttons inside to shrink below intrinsic width when needed */
+      .analysis-controls .btn {
+        min-width: 0;
+        white-space: nowrap;
+      }
+
+      /* On very small screens make buttons stretch and reduce padding */
+      @media (max-width: 480px) {
+        /* Keep full controls but allow wrapping for small screens */
+        .analysis-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+        .analysis-controls .btn {
+          flex: 1 1 auto;
+          padding: 8px 12px !important;
+          font-size: 13px !important;
+        }
+        .analysis-controls .btn.pri {
+          order: 99;
+          width: 100%;
+        }
+
+        /* Reduce chart heights on very small screens to avoid excessive vertical scrolling */
+        .chart-container, .timeline-container, #modelPrecisionChartContainer {
+          height: 300px !important;
+        }
+      }
+
+      /* Ensure compact menu is not shown on wider screens */
+      @media (min-width: 481px) {
+        .analysis-compact { display: none !important; }
+        .analysis-compact .analysis-menu-btn { display: none !important; }
+      }
+
     </style>
 </head>
 <body>
@@ -572,13 +785,19 @@
     <section class="hero">
       <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                  <p class="translatable">Advanced Crop Diagnostics Platform</p>
-                  <h1 class="translatable">Agri-Nigrani: Crop Analysis</h1>
-                  <p class="translatable">Real-time analysis, AI-driven insights, and sensor integration.</p>
+                  <p class="translatable"></p>
+                  <h1 class="translatable">Agri-Nigrani</h1>
+                  <p class="translatable"></p>
                 </div>
                 <div id="languageSelector" style="display: flex; gap: 8px; align-items: center;">
                   <button class="btn sec" onclick="translateToBangla()" title="Switch to Bangla">বাংলা</button>
                   <button class="btn sec" onclick="translateToEnglish()" title="Switch to English">ENGLISH</button>
+                  <div id="themeSelector" class="theme-switcher" role="toolbar" aria-label="Theme selector" style="margin-left:12px;">
+                    <button class="btn sec theme-btn" data-theme="" onclick="setTheme('')" title="Default">Default</button>
+                    <button class="btn sec theme-btn" data-theme="forest" onclick="setTheme('forest')" title="Forest">🌿</button>
+                    <button class="btn sec theme-btn" data-theme="ocean" onclick="setTheme('ocean')" title="Ocean">🌊</button>
+                    <button class="btn sec theme-btn" data-theme="dark" onclick="setTheme('dark')" title="Dark">🌙</button>
+                  </div>
                 </div>
               </div>
             </section>
@@ -602,11 +821,11 @@
           <h2 class="translatable">Live Camera Stream</h2>
           <span class="pill translatable">Live</span>
         </div>
-        <div class="ip-config" style="margin-bottom: 24px; border: none; padding: 0; box-shadow: none; background: transparent;">
+        <div class="ip-config">
           <span style="font-size: 14px; color: var(--on-surface-variant); font-weight: 500;" class="translatable">ESP32 Camera IP:</span>
           <input type="text" id="ipInput" placeholder="10.180.248.XXX" value="10.180.248.33">
           <button onclick="setIP()" class="translatable">Connect</button>
-          <span id="connStatus" style="font-size: 13px; color: var(--on-surface-variant);"></span>
+          <span id="connStatus" class="conn-status" aria-live="polite"></span>
         </div>
         <div class="frame">
           <img id="str" alt="Stream" style="display: none;">
@@ -644,7 +863,17 @@
         <p id="localImagePlaceholder" style="color: var(--on-surface-variant); font-size: 14px; text-align: center;" class="translatable">Select an image to analyze</p>
         <div class="actions">
           <input type="file" id="imageInput" accept="image/*" capture="environment" style="display: none;">
-          <button class="btn sec translatable" onclick="document.getElementById('imageInput').click()">Choose Image</button>
+          <input type="file" id="imageInputGallery" accept="image/*" style="display: none;">
+
+          <div class="local-image-controls" style="display:flex; gap:8px;">
+            <button class="btn sec translatable" onclick="document.getElementById('imageInput').click()">Capture Photo</button>
+            <button class="btn sec translatable" onclick="document.getElementById('imageInputGallery').click()">Choose from Gallery</button>
+          </div>
+
+          <div id="batchProgress" class="batch-progress" style="display:none; margin-top:12px;">
+            <div class="bar" style="width:0%; height:8px; border-radius:6px; background:linear-gradient(90deg,var(--primary),#0b4eb3);"></div>
+            <div class="label" id="batchProgressLabel" style="margin-top:6px; font-size:13px; color:var(--on-surface-variant);"></div>
+          </div>
           <button id="localAnalyzeBtn" class="btn pri translatable" onclick="analyzeLocalImage()" disabled>Analyze Image</button>
         </div>
       </article>
@@ -710,52 +939,7 @@
     <!-- Environment panel removed for visual-only workflow -->
 
     <article class="card">
-      <div class="head">
-        <h2 class="translatable">Platform Analytics</h2>
-        <div style="display: flex; gap: 8px; align-items: center;">
-
-        </div>
-      </div>
-      
-      <div class="stats-grid" id="statsGrid">
-        <div class="stat-box">
-          <div class="label translatable">Total Scans</div>
-          <div class="value" id="totalScans">0</div>
-        </div>
-        <div class="stat-box">
-          <div class="label translatable">Diseases Detected</div>
-          <div class="value" id="diseasesFound">0</div>
-          <div class="change up" id="diseaseChange">--</div>
-        </div>
-        <div class="stat-box">
-          <div class="label translatable">Avg. Confidence</div>
-          <div class="value" id="avgConfidence">0%</div>
-        </div>
-        <div class="stat-box">
-          <div class="label translatable">Threat Level</div>
-          <div class="value" id="riskLevel">Low</div>
-        </div>
-      </div>
-
-      <div class="analytics-grid">
-        <div class="card" style="padding: 12px;">
-          <h3 style="font-size: 14px; margin-bottom: 12px; color: var(--on-surface-variant);" class="translatable">Disease Distribution</h3>
-          <div class="chart-container">
-            <canvas id="diseaseChart"></canvas>
-          </div>
-        </div>
-        
-        <div class="card" style="padding: 12px;">
-          <h3 style="font-size: 14px; margin-bottom: 12px; color: var(--on-surface-variant);" class="translatable">Confidence Trend</h3>
-          <div class="chart-container">
-            <canvas id="confidenceChart"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <div class="analytics-grid" style="margin-top: 16px;">
-        <!-- Sensor-related charts removed -->
-      </div>
+      <!-- Platform analytics (charts and stats) removed -->
 
       <div style="margin-top: 16px;">
         <div class="card" style="padding: 20px;">
@@ -781,7 +965,12 @@
               <span id="firebaseIcon">⚪</span>
               <span id="firebaseStatusText" class="translatable">Not connected</span>
             </span>
-            <button class="btn sec" onclick="syncWithFirebase()"><span class="translatable">🔄 Sync</span></button>
+            <button class="btn sec" onclick="syncWithFirebase()"><span class="translatable">Sync</span></button>
+            <button class="btn sec" onclick="resyncLocalLogs()"><span class="translatable">Resync</span></button>
+            <div id="resyncProgress" class="resync-progress" style="display:none; align-items:center; gap:8px;">
+              <div class="resync-bar" aria-hidden="true"><div class="resync-bar-fill" style="width:0%"></div></div>
+              <div class="resync-text" id="resyncProgressText"></div>
+            </div>
           </div>
         </div>
 
@@ -795,13 +984,14 @@
         <div class="card" style="padding: 12px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
             <h3 style="font-size: 14px; margin: 0; color: var(--on-surface-variant);" class="translatable">Analysis Log</h3>
-            <div style="display: flex; gap: 8px;">
+            <div class="analysis-controls">
               <button class="btn sec translatable" onclick="loadFromFirebase()" style="padding: 8px 16px; font-size: 13px;">📥 Load</button>
               <button class="btn sec translatable" onclick="filterHistory('all')" style="padding: 8px 16px; font-size: 13px;">All</button>
               <button class="btn sec translatable" onclick="filterHistory('diseases')" style="padding: 8px 16px; font-size: 13px;">Diseases</button>
               <button class="btn sec translatable" onclick="filterHistory('healthy')" style="padding: 8px 16px; font-size: 13px;">Healthy</button>
               <button class="btn pri" onclick="clearAnalyticsData()" style="padding: 8px 16px; font-size: 13px;"><span class="translatable">🗑️ Clear Diagnostic Log</span></button>
             </div>
+
           </div>
           <div class="history-panel" id="historyPanel">
             <p style="text-align: center; color: var(--on-surface-variant); padding: 32px;" class="translatable">No diagnostic logs yet. Run your first analysis to get started.</p>
@@ -809,6 +999,9 @@
         </div>
       </article>
     </main>
+
+    <!-- Toast container for user messages -->
+    <div id="toasts" aria-live="polite" style="position: fixed; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 9999;"></div>
 
     <script>
       document.addEventListener('DOMContentLoaded', () => {
@@ -818,21 +1011,28 @@
           card.style.animationDelay = `${index * 100}ms`;
         });
 
-        // Handle local image selection
-        document.getElementById('imageInput').addEventListener('change', (event) => {
-          const file = event.target.files[0];
+        // Handle local image selection (camera input)
+        function handleLocalImageFile(file) {
           if (!file) return;
-
           const reader = new FileReader();
           reader.onload = (e) => {
             const preview = document.getElementById('localImagePreview');
             const placeholder = document.getElementById('localImagePlaceholder');
             preview.innerHTML = `<img src="${e.target.result}" style="max-width:100%; max-height:400px; border-radius:8px;" alt="Selected image">`;
             preview.style.display = 'block';
-            placeholder.style.display = 'none';
+            if (placeholder) placeholder.style.display = 'none';
             document.getElementById('localAnalyzeBtn').disabled = false;
           };
           reader.readAsDataURL(file);
+        }
+
+        document.getElementById('imageInput').addEventListener('change', (event) => {
+          handleLocalImageFile(event.target.files && event.target.files[0]);
+        });
+
+        // Gallery/file-manager input
+        document.getElementById('imageInputGallery').addEventListener('change', (event) => {
+          handleLocalImageFile(event.target.files && event.target.files[0]);
         });
       });
 
@@ -964,10 +1164,59 @@ function calculateConsensus(results) {
     };
 }
 
+    // Resize an image file on the client to limit CPU/memory usage on phones
+    function resizeImageFile(file, maxDim = 1024, quality = 0.8) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          img.onload = () => {
+            let { width, height } = img;
+            const max = Math.max(width, height);
+            const scale = max > maxDim ? (maxDim / max) : 1;
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.round(width * scale);
+            canvas.height = Math.round(height * scale);
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            try {
+              const dataUrl = canvas.toDataURL('image/jpeg', quality);
+              resolve(dataUrl);
+            } catch (err) { reject(err); }
+          };
+          img.onerror = (err) => reject(err);
+          img.src = e.target.result;
+        };
+        reader.onerror = (err) => reject(err);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Run inference in small batches to avoid saturating CPU/memory on mobile devices
+    async function runInferenceBatched(activeModels, base64Image, batchSize = 3, progressCb = null) {
+      const results = [];
+      const total = activeModels.length;
+      for (let i = 0; i < activeModels.length; i += batchSize) {
+        const batch = activeModels.slice(i, i + batchSize);
+        const promises = batch.map(m => infer(base64Image, m).catch(e => ({ error: true, message: e.message })));
+        const batchResults = await Promise.all(promises);
+        results.push(...batchResults);
+        // Let the UI breathe and update
+        await new Promise(r => setTimeout(r, 50));
+        if (typeof progressCb === 'function') {
+          progressCb(Math.min(results.length, total), total);
+        }
+      }
+      return results;
+    }
+
     async function analyzeLocalImage() {
-      const imageInput = document.getElementById('imageInput');
+      const camInput = document.getElementById('imageInput');
+      const galleryInput = document.getElementById('imageInputGallery');
       const analyzeBtn = document.getElementById('localAnalyzeBtn');
-      if (!imageInput.files || imageInput.files.length === 0) {
+
+      const file = (camInput && camInput.files && camInput.files[0]) || (galleryInput && galleryInput.files && galleryInput.files[0]);
+      if (!file) {
         alert('Please select an image first.');
         return;
       }
@@ -976,43 +1225,63 @@ function calculateConsensus(results) {
       analyzeBtn.disabled = true;
       analyzeBtn.innerHTML = '<div style="width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite;"></div><span>' + translateText('Analyzing...') + '</span>';
 
-      const file = imageInput.files[0];
-      const reader = new FileReader();
-      reader.onloadend = async function() {
-        const base64Image = reader.result.split(',')[1];
-        
+      // Resize/compress image first to reduce memory and CPU on phones
+      try {
+        const resizedDataUrl = await resizeImageFile(file, 1024, 0.8);
+        // show preview
+        const preview = document.getElementById('localImagePreview');
+        if (preview) {
+          preview.style.display = 'block';
+          preview.innerHTML = `<img src="${resizedDataUrl}" style="max-width:100%; max-height:400px; border-radius:8px;" alt="Selected image">`;
+          const placeholder = document.getElementById('localImagePlaceholder');
+          if (placeholder) placeholder.style.display = 'none';
+        }
+
         // Get active models based on plant selection
         const plantName = PLANT_TYPES.find(p => p.id === selectedPlantType)?.name || 'All Plants';
         const activeModels = getActiveModels();
 
-        console.log('Selected plant type:', selectedPlantType);
-        console.log('Active models count:', activeModels.length);
-        console.log('Active models:', activeModels.map(m => m.name));
-
-        // Show analysis in progress in the results panel
         document.getElementById('res').innerHTML = `<div class="rc"><div class="t">Analyzing local image of ${plantName} with ${activeModels.length} AI models...</div><p style="color: var(--on-surface-variant); font-size: 14px;">Processing image...</p></div>`;
 
-        // Run analysis
-        try {
-          const results = await Promise.all(activeModels.map(model => infer(base64Image, model)));
-          const consensusData = calculateConsensus(results);
-          geminiRecommendation = null; // Set to null for local analysis
-          showMultiModelResults(results, null, base64Image, consensusData);
-        } catch (e) {
-          document.getElementById('res').innerHTML = `<div class="rc"><div class="t">Failed<span class="badge err">Error</span></div><p style="color: var(--on-surface-variant); font-size: 14px;">${e.message}</p></div>`;
-        } finally {
-          // Re-enable button and restore text
-          analyzeBtn.disabled = false;
-          analyzeBtn.innerHTML = 'Analyze Image';
-        }
+        const base64Image = resizedDataUrl.split(',')[1];
+
+        // Show and initialize progress
+        const progressEl = document.getElementById('batchProgress');
+        const progressBar = progressEl ? progressEl.querySelector('.bar') : null;
+        const progressLabel = document.getElementById('batchProgressLabel');
+        if (progressEl) { progressEl.style.display = 'block'; progressEl.setAttribute('aria-hidden', 'false'); }
+        if (progressBar) { progressBar.style.width = '0%'; }
+        if (progressLabel) { progressLabel.textContent = '0 / ' + activeModels.length + ' models'; }
+
+        // Run inference in batches with progress callback
+        const results = await runInferenceBatched(activeModels, base64Image, 3, (done, total) => {
+          const pct = Math.round((done / total) * 100);
+          if (progressBar) progressBar.style.width = pct + '%';
+          if (progressLabel) progressLabel.textContent = done + ' / ' + total + ' models';
+        });
+
+        const consensusData = calculateConsensus(results);
+        geminiRecommendation = null; // Set to null for local analysis
+        showMultiModelResults(results, null, consensusData);
+
+        // Hide progress after a moment
+        setTimeout(() => { if (progressEl) { progressEl.style.display = 'none'; progressEl.setAttribute('aria-hidden','true'); } }, 700);
+      } catch (e) {
+        document.getElementById('res').innerHTML = `<div class="rc"><div class="t">Failed<span class="badge err">Error</span></div><p style="color: var(--on-surface-variant); font-size: 14px;">${e.message || e}</p></div>`;
+      } finally {
+        // Re-enable button and restore text
+        analyzeBtn.disabled = false;
+        analyzeBtn.innerHTML = 'Analyze Image';
       }
-      reader.readAsDataURL(file);
     }
 
 
 
   </script>
 
+  <script>
+
+  </script>
 
   <!-- Translation feature removed -->
   <script>
@@ -1052,13 +1321,6 @@ function calculateConsensus(results) {
       'Humidity': 'আর্দ্রতা',
       'Soil Moisture': 'মাটির আর্দ্রতা',
       'Toggle Pump': 'পাম্প চালু/বন্ধ করুন',
-      'Platform Analytics': 'প্ল্যাটফর্ম বিশ্লেষণ',
-      'Total Scans': 'মোট স্ক্যান',
-      'Diseases Detected': 'রোগ সনাক্ত',
-      'Avg. Confidence': 'গড় আত্মবিশ্বাস',
-      'Threat Level': 'হুমকির স্তর',
-      'Disease Distribution': 'রোগ বিতরণ',
-      'Confidence Trend': 'আত্মবিশ্বাস প্রবণতা',
       'Diagnostic History': 'ডায়াগনস্টিক ইতিহাস',
       'Not connected': 'সংযুক্ত নয়',
       'Sync': 'সিঙ্ক',
@@ -1095,8 +1357,7 @@ function calculateConsensus(results) {
       'with': 'সাথে',
       'AI models': 'এআই মডেল',
       'Multi-Model Analysis': 'বহু-মডেল বিশ্লেষণ',
-      'Captured Image': 'ধরা চিত্র',
-      'Image saved to Firebase Firestore': 'চিত্র ফায়ারবেসে সংরক্ষণ করা হয়েছে',
+
       'Smart Consensus Decision': 'স্মার্ট সম্মত সিদ্ধান্ত',
       'Final Verdict:': 'চূড়ান্ত সিদ্ধান্ত:',
       'Model(s) Detected Disease': 'মডেল(গুলি) রোগ সনাক্ত করেছে',
@@ -1195,7 +1456,6 @@ function calculateConsensus(results) {
       'Capturing and processing image': 'চিত্র ক্যাপচার এবং প্রক্রিয়াকরণ হচ্ছে',
 
       /* Firebase */
-      'Firebase + AI enabled': 'ফায়ারবেস + এআই সক্রিয়',
       'Local storage only': 'শুধুমাত্র লোকাল স্টোরেজ',
 
       /* Feedback */
@@ -1414,8 +1674,8 @@ function calculateConsensus(results) {
       
       if (connected) {
         if(statusEl) statusEl.className = 'firebase-status connected';
-        if(iconEl) iconEl.textContent = '✅';
-        if(textEl) textEl.textContent = translateText('Firebase + AI enabled');
+        if(iconEl) iconEl.textContent = '';
+        if(textEl) textEl.textContent = '';
         if(firebaseDot) firebaseDot.classList.remove('offline');
       } else {
         if(statusEl) statusEl.className = 'firebase-status disconnected';
@@ -1791,7 +2051,7 @@ function calculateConsensus(results) {
     }
     
     // Enhanced log entry with complete data
-    function createCompleteLogEntry(results, sensorData, envContext, capturedImageBase64) {
+    function createCompleteLogEntry(results, sensorData, envContext) {
       const timestamp = new Date().toISOString();
       const diseases = [];
       const allModelResults = [];
@@ -1855,7 +2115,6 @@ function calculateConsensus(results) {
         primaryDisease: diseases.length > 0 ? diseases[0].name : 'Healthy',
         avgConfidence: diseases.length > 0 ? diseases.reduce((sum, d) => sum + d.confidence, 0) / diseases.length : 0,
         overallSeverity: envContext ? envContext.severity : 'unknown',
-        imageBase64: capturedImageBase64 || null,
         deviceInfo: {
           userAgent: navigator.userAgent,
           platform: navigator.platform,
@@ -1890,11 +2149,13 @@ function calculateConsensus(results) {
             const logData = doc.data();
             logData.firebaseId = doc.id;
             logData.savedToFirebase = true;
+            // Do not load or persist embedded images
+            if (logData.imageBase64) delete logData.imageBase64;
             firebaseLogs.push(logData);
           });
           
           analyticsData.logs = firebaseLogs;
-          console.log('✅ Loaded', firebaseLogs.length, 'logs from Firebase');
+          console.log('✅ Loaded', firebaseLogs.length, 'logs from Firebase (images ignored)');
           
           // Load model feedback from Firebase
           console.log('📥 Loading model feedback from Firebase...');
@@ -1942,11 +2203,12 @@ function calculateConsensus(results) {
         try {
           const data = JSON.parse(stored);
           // Support old format (array) and new format (object with logs and feedback)
+          // Sanitize loaded logs to ensure no embedded images are kept
           if (Array.isArray(data)) {
-            analyticsData.logs = data;
+            analyticsData.logs = data.map(l => { const c = { ...l }; if (c.imageBase64) delete c.imageBase64; return c; });
             analyticsData.modelFeedback = {};
           } else {
-            analyticsData.logs = data.logs || [];
+            analyticsData.logs = (data.logs || []).map(l => { const c = { ...l }; if (c.imageBase64) delete c.imageBase64; return c; });
             analyticsData.modelFeedback = data.modelFeedback || {};
           }
           console.log('📦 Loaded', analyticsData.logs.length, 'records from localStorage cache');
@@ -1973,10 +2235,13 @@ function calculateConsensus(results) {
         // Save all logs to Firebase
         analyticsData.logs.forEach(log => {
           if (!log.savedToFirebase) {
-            saveToFirebase(log).then(() => {
+            saveToFirebase(log).then((id) => {
               log.savedToFirebase = true;
+              if (id) log.firebaseId = id;
+              showToast('Synced: ' + (log.id || id), 'success', 1800);
             }).catch(err => {
               console.error('Failed to save log to Firebase:', err);
+              showToast('Failed to sync: ' + (log.id || ''), 'error', 3500);
             });
           }
         });
@@ -2020,7 +2285,7 @@ function calculateConsensus(results) {
         const dataToSave = {
           logs: recentLogs,
           modelFeedback: analyticsData.modelFeedback,
-          cache,
+          cache: {}, // placeholder - ensure defined
           cacheOnly: true
         };
         localStorage.setItem('diseaseAnalytics', JSON.stringify(dataToSave));
@@ -2030,6 +2295,30 @@ function calculateConsensus(results) {
       }
     }
     
+    // Utility: Recursively replace undefined values with null (safe for Firestore)
+    function sanitizeForFirestore(obj) {
+      if (obj === undefined) return null;
+      if (obj === null) return null;
+      if (Array.isArray(obj)) {
+        return obj.map(v => sanitizeForFirestore(v));
+      }
+      if (typeof obj === 'object') {
+        const out = {};
+        Object.keys(obj).forEach(k => {
+          const v = obj[k];
+          if (v === undefined) {
+            out[k] = null;
+          } else if (typeof v === 'object' && v !== null) {
+            out[k] = sanitizeForFirestore(v);
+          } else {
+            out[k] = v;
+          }
+        });
+        return out;
+      }
+      return obj;
+    }
+
     // Save to Firebase Firestore
     async function saveToFirebase(logEntry) {
       if (!firebaseReady || !firebaseEnabled || !db) {
@@ -2041,9 +2330,12 @@ function calculateConsensus(results) {
         // Store complete entry without image in Firestore
         const { imageBase64, ...firestoreEntry } = logEntry;
         
+        // Sanitize to avoid unsupported 'undefined' values
+        const cleanEntry = sanitizeForFirestore(firestoreEntry);
+        
         // Add to Firestore without image data
         const docRef = await db.collection('diseaseAnalytics').add({
-          ...firestoreEntry,
+          ...cleanEntry,
           uploadedAt: firebase.firestore.FieldValue.serverTimestamp(),
           userId: auth.currentUser ? auth.currentUser.uid : 'anonymous'
         });
@@ -2077,8 +2369,8 @@ function calculateConsensus(results) {
     }
     
     // Log analysis result (enhanced with complete data)
-    async function logAnalysis(results, sensorData, envContext, imageBase64, analysisId) {
-      const logEntry = createCompleteLogEntry(results, sensorData, envContext, imageBase64);
+    async function logAnalysis(results, sensorData, envContext, analysisId) {
+      const logEntry = createCompleteLogEntry(results, sensorData, envContext);
       logEntry.id = analysisId; // Store the analysis ID
       logEntry.modelFeedbacks = {}; // Initialize empty feedback object
       
@@ -2133,8 +2425,7 @@ function calculateConsensus(results) {
         });
         
         console.log('✅ Loaded', firebaseLogs.length, 'records from Firebase');
-        const withImages = firebaseLogs.filter(log => log.imageBase64).length;
-        console.log('📷 Records with images:', withImages, '/', firebaseLogs.length);
+        // Any embedded images in Firebase records are intentionally ignored for privacy and storage policy.
         
         // Merge with local data (remove duplicates by timestamp)
         const merged = [...analyticsData.logs, ...firebaseLogs];
@@ -2166,87 +2457,117 @@ function calculateConsensus(results) {
       }
     }
     
-    // Load image from Firebase for a specific log entry
-    async function loadImageFromFirebase(firebaseId, logId) {
-      if (!firebaseReady || !firebaseEnabled || !db) return;
-      
+    // Image loading from Firebase removed — application no longer loads or displays stored images.
+    
+    // Show transient toast notifications
+    function showToast(message, type = 'info', duration = 3500) {
       try {
-        const doc = await db.collection('diseaseAnalytics').doc(firebaseId).get();
-        if (doc.exists) {
-          const data = doc.data();
-          if (data.imageBase64) {
-            // Update the placeholder with the actual image
-            const imgElement = document.getElementById('img_' + logId);
-            if (imgElement) {
-              const img = document.createElement('img');
-              img.src = 'data:image/jpeg;base64,' + data.imageBase64;
-              img.className = 'history-image';
-              img.alt = 'Analysis image';
-              imgElement.replaceWith(img);
-            }
-            
-            // Update local data cache
-            const logIndex = analyticsData.logs.findIndex(l => l.id === logId);
-            if (logIndex !== -1) {
-              analyticsData.logs[logIndex].imageBase64 = data.imageBase64;
-              saveAnalytics();
-            }
-          } else {
-            // No image available
-            const imgElement = document.getElementById('img_' + logId);
-            if (imgElement) {
-              imgElement.textContent = '📷 ' + translateText('No image available');
-            }
-          }
-        }
-      } catch (e) {
-        console.error('Failed to load image from Firebase:', e);
-        const imgElement = document.getElementById('img_' + logId);
-        if (imgElement) {
-          imgElement.textContent = translateText('❌ Failed to load image');
-        }
+        const container = document.getElementById('toasts');
+        if (!container) return;
+        const el = document.createElement('div');
+        el.className = `toast ${type}`;
+        el.innerHTML = `<div class="label">${message}</div>`;
+        container.appendChild(el);
+        // force reflow then show
+        requestAnimationFrame(() => el.classList.add('show'));
+        setTimeout(() => {
+          el.classList.remove('show');
+          setTimeout(() => el.remove(), 300);
+        }, duration);
+      } catch (err) {
+        console.log('Toast error:', err);
       }
     }
-    
-    // Sync with Firebase
+
+    // One-time resync helper: upload unsynced logs with per-record toasts and final summary
+    async function resyncLocalLogs() {
+      const btn = (event && event.target) ? event.target : document.querySelector('.btn.sec[onclick="resyncLocalLogs()"]');
+      if (btn) { btn.disabled = true; btn.textContent = translateText('⏳ Resyncing...'); }
+
+      if (!firebaseEnabled || !db) {
+        showToast('Firebase not configured. Update firebaseConfig first.', 'error', 5000);
+        if (btn) { btn.disabled = false; btn.textContent = translateText('Resync'); }
+        return { success: 0, failed: 0 };
+      }
+
+      const unsynced = analyticsData.logs.filter(l => !l.firebaseId || !l.savedToFirebase);
+      if (unsynced.length === 0) {
+        showToast('No unsynced local logs found.', 'info');
+        return { success: 0, failed: 0 };
+      }
+
+      showToast(`Resyncing ${unsynced.length} local records...`, 'info', 2500);
+      let success = 0, failed = 0;
+
+      // prepare compact progress UI
+      const progressEl = document.getElementById('resyncProgress');
+      const progressBarFill = progressEl ? progressEl.querySelector('.resync-bar-fill') : null;
+      const progressText = document.getElementById('resyncProgressText');
+      if (progressEl) { progressEl.style.display = 'inline-flex'; }
+
+      for (let i = 0; i < unsynced.length; i++) {
+        const log = unsynced[i];
+        try {
+          const id = await saveToFirebase(log);
+          if (id) {
+            log.firebaseId = id;
+            log.savedToFirebase = true;
+            success++;
+            showToast('Synced: ' + (log.id || id), 'success', 1800);
+            // update local cache
+            saveAnalytics();
+          } else {
+            failed++;
+            showToast('Failed to sync: ' + (log.id || ''), 'error', 3000);
+          }
+        } catch (e) {
+          failed++;
+          showToast('Failed to sync: ' + (log.id || '') + ' (' + e.message + ')', 'error', 4000);
+          console.error('Resync error for', log.id, e);
+        }
+
+        // update compact progress UI
+        const done = i + 1;
+        const total = unsynced.length;
+        const pct = Math.round((done / total) * 100);
+        if (progressBarFill) progressBarFill.style.width = pct + '%';
+        if (progressText) progressText.textContent = `${done}/${total}`;
+
+        // small pause to avoid rapid-fire
+        await new Promise(r => setTimeout(r, 200));
+      }
+      // hide progress UI after short delay
+      setTimeout(() => { if (progressEl) progressEl.style.display = 'none'; if (progressBarFill) progressBarFill.style.width = '0%'; if (progressText) progressText.textContent = ''; }, 700);
+      showToast(`Resync complete: ${success} succeeded, ${failed} failed.`, failed > 0 ? 'error' : 'success', 5000);
+      if (btn) { btn.disabled = false; btn.textContent = translateText('Resync'); }
+      return { success, failed };
+    }
+
+    // Sync with Firebase (wrapper that calls resync helper and provides button feedback)
     async function syncWithFirebase() {
       if (!firebaseEnabled || !db) {
         alert('Firebase not configured. Please update firebaseConfig in the code.');
         return;
       }
-      
+      const btn = (event && event.target) ? event.target : document.querySelector('.btn.sec[onclick="syncWithFirebase()"]');
+      if (btn) { btn.disabled = true; btn.textContent = translateText('⏳ Syncing...'); }
+
       try {
-        const btn = event.target;
-        btn.disabled = true;
-        btn.textContent = translateText('⏳ Syncing...');
-        
-        let uploaded = 0;
-        for (const log of analyticsData.logs) {
-          if (!log.firebaseId) {
-            await saveToFirebase(log);
-            uploaded++;
-          }
-        }
-        
-        alert('Synced ' + uploaded + ' new records to Firebase');
-        
-        btn.disabled = false;
-        btn.textContent = translateText('🔄 Sync');
+        const { success, failed } = await resyncLocalLogs();
+        if (btn) { btn.disabled = false; btn.textContent = translateText('Sync'); }
+        return { success, failed };
       } catch (e) {
         console.error('❌ Sync failed:', e);
-        alert('Sync failed: ' + e.message);
-        event.target.disabled = false;
-        event.target.textContent = translateText('🔄 Sync');
+        if (btn) { btn.disabled = false; btn.textContent = translateText('Sync'); }
+        showToast('Sync failed: ' + e.message, 'error', 5000);
       }
     }
     
     // Update analytics dashboard
     function updateAnalyticsDashboard() {
       if (analyticsData.logs.length === 0) {
-        document.getElementById('totalScans').textContent = '0';
-        document.getElementById('diseasesFound').textContent = '0';
-        document.getElementById('avgConfidence').textContent = '0%';
-        document.getElementById('riskLevel').textContent = 'N/A';
+        // No analytics logs
+        updateCharts();
         return;
       }
       
@@ -2263,36 +2584,13 @@ function calculateConsensus(results) {
       const recentDiseases = recentLogs.filter(log => log.primaryDisease !== 'Healthy').length;
       const riskLevel = recentDiseases >= 7 ? 'High' : recentDiseases >= 4 ? 'Medium' : 'Low';
       
-      // Update stats
-      document.getElementById('totalScans').textContent = totalScans;
-      document.getElementById('diseasesFound').textContent = diseasesFound;
-      document.getElementById('avgConfidence').textContent = avgConfidence + '%';
-      document.getElementById('riskLevel').textContent = riskLevel;
-      
-      // Disease change trend
-      if (analyticsData.logs.length >= 2) {
-        const previousDiseaseRate = analyticsData.logs.slice(0, -1).filter(log => log.primaryDisease !== 'Healthy').length;
-        const change = diseasesFound - previousDiseaseRate;
-        const changeEl = document.getElementById('diseaseChange');
-        if (change > 0) {
-          changeEl.textContent = '+' + change + ' from previous';
-          changeEl.className = 'change up';
-        } else if (change < 0) {
-          changeEl.textContent = change + ' from previous';
-          changeEl.className = 'change down';
-        } else {
-          changeEl.textContent = 'No change';
-          changeEl.className = 'change';
-        }
-      }
-      
+      // Platform analytics stats removed
       updateCharts();
     }
     
     // Update all charts
     function updateCharts() {
-      updateDiseaseChart();
-      updateConfidenceChart();
+      // Disease and confidence charts removed
       // Sensor-related charts removed
       updateTimelineChart();
       updateModelPrecisionChart();
@@ -2472,128 +2770,7 @@ function calculateConsensus(results) {
       });
     }
     
-    // Disease Distribution Pie Chart
-    function updateDiseaseChart() {
-      const ctx = document.getElementById('diseaseChart');
-      if (!ctx) return;
-      
-      // Count disease occurrences
-      const diseaseCounts = {};
-      analyticsData.logs.forEach(log => {
-        if (log.primaryDisease !== 'Healthy') {
-          diseaseCounts[log.primaryDisease] = (diseaseCounts[log.primaryDisease] || 0) + 1;
-        }
-      });
-      
-      const labels = Object.keys(diseaseCounts);
-      const data = Object.values(diseaseCounts);
-      
-      if (analyticsData.charts.disease) {
-        analyticsData.charts.disease.destroy();
-      }
-      
-      analyticsData.charts.disease = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: labels.length > 0 ? labels : ['No diseases detected'],
-          datasets: [{
-            data: data.length > 0 ? data : [1],
-            backgroundColor: [
-              '#EA4335', '#FBBC04', '#34A853', '#4285F4', '#9C27B0',
-              '#FF9800', '#00BCD4', '#E91E63', '#8BC34A', '#FF5722'
-            ],
-            borderWidth: 2,
-            borderColor: getComputedStyle(document.documentElement).getPropertyValue('--surface')
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                color: getComputedStyle(document.documentElement).getPropertyValue('--on-surface'),
-                font: { size: 11 },
-                padding: 10
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  return context.label + ': ' + context.parsed + ' occurrences';
-                }
-              }
-            }
-          }
-        }
-      });
-    }
-    
-    // Confidence Trend Line Chart
-    function updateConfidenceChart() {
-      const ctx = document.getElementById('confidenceChart');
-      if (!ctx) return;
-      
-      const recentLogs = analyticsData.logs.slice(-20);
-      const labels = recentLogs.map((log, i) => 'Scan ' + (analyticsData.logs.length - 20 + i + 1));
-      const confidenceData = recentLogs.map(log => log.avgConfidence);
-      
-      if (analyticsData.charts.confidence) {
-        analyticsData.charts.confidence.destroy();
-      }
-      
-      analyticsData.charts.confidence = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels,
-          datasets: [{
-            label: 'Confidence %',
-            data: confidenceData,
-            borderColor: '#4285F4',
-            backgroundColor: 'rgba(66, 133, 244, 0.1)',
-            tension: 0.4,
-            fill: true,
-            pointRadius: 4,
-            pointHoverRadius: 6
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: 100,
-              ticks: {
-                color: getComputedStyle(document.documentElement).getPropertyValue('--on-surface-variant')
-              },
-              grid: {
-                color: 'rgba(255, 255, 255, 0.05)'
-              }
-            },
-            x: {
-              ticks: {
-                color: getComputedStyle(document.documentElement).getPropertyValue('--on-surface-variant'),
-                maxRotation: 45,
-                minRotation: 45,
-                font: { size: 9 }
-              },
-              grid: {
-                display: false
-              }
-            }
-          },
-          plugins: {
-            legend: {
-              labels: {
-                color: getComputedStyle(document.documentElement).getPropertyValue('--on-surface')
-              }
-            }
-          }
-        }
-      });
-    }
+    // Disease and confidence chart functions removed
     
     // Sensor-related chart functions removed
     
@@ -2800,7 +2977,7 @@ function calculateConsensus(results) {
         
         html += '<div class="history-disease" onclick="toggleHistoryDetails(' + index + ', \'' + log.id + '\')"; style="cursor: pointer;">';
         if (log.primaryDisease === 'Healthy') {
-          html += '✅ Healthy Plant';
+          html += 'Healthy Plant';
         } else {
           html += '⚠️ ' + log.primaryDisease;
         }
@@ -2813,15 +2990,7 @@ function calculateConsensus(results) {
         // Details section (hidden by default)
         html += '<div class="history-details" id="details_' + log.id + '">';
         
-        // Image - Load from Firebase if not in local data
-        if (log.imageBase64) {
-          html += '<img src="data:image/jpeg;base64,' + log.imageBase64 + '" class="history-image" alt="Analysis image">';
-        } else if (log.firebaseId) {
-          // Placeholder for images being loaded from Firebase
-          html += '<div class="history-image" style="display:flex;align-items:center;justify-content:center;background:#f0f0f0;min-height:150px;" id="img_' + log.id + '">📷 Loading image...</div>';
-          // Load image asynchronously
-          loadImageFromFirebase(log.firebaseId, log.id);
-        }
+
         
         // Diseases detected
         if (log.diseases && log.diseases.length > 0) {
@@ -3249,8 +3418,8 @@ async function clearAnalyticsData() {
       localStorage.setItem('esp32_ip', BASE_URL);
       
       console.log('Connecting to:', BASE_URL);
-      document.getElementById('connStatus').textContent = translateText('Connecting...');
-      document.getElementById('connStatus').style.color = 'var(--on-surface-variant)';
+      const cs = document.getElementById('connStatus');
+      if (cs) { cs.textContent = translateText('Connecting...'); cs.className = 'conn-status'; }
 
       const espDot = document.getElementById('espDot');
       const espStatus = document.getElementById('espStatus');
@@ -3286,8 +3455,7 @@ async function clearAnalyticsData() {
         }
 
         if (ok) {
-          document.getElementById('connStatus').textContent = '✅ ' + translateText('ESP32 reachable');
-          document.getElementById('connStatus').style.color = 'var(--success)';
+          if (cs) { cs.textContent = translateText('ESP32 reachable'); cs.className = 'conn-status success'; }
           document.getElementById('visualBtn').disabled = false;
           document.getElementById('toggleBtn').disabled = false;
           document.getElementById('streamPlaceholder').textContent = translateText('Ready. Click "Start stream" to preview.');
@@ -3297,8 +3465,7 @@ async function clearAnalyticsData() {
           // espStatus.textContent = 'Online';
         } else {
           console.error('Connection failed: ESP32 not reachable at', cleanIP);
-          document.getElementById('connStatus').textContent = '❌ ' + translateText('Cannot reach ESP32 at') + ' ' + cleanIP;
-          document.getElementById('connStatus').style.color = 'var(--error)';
+          if (cs) { cs.textContent = translateText('Cannot reach ESP32 at') + ' ' + cleanIP; cs.className = 'conn-status error'; }
           document.getElementById('streamPlaceholder').textContent = translateText('Connection failed. Check:\n1. ESP32 is powered on\n2. WiFi connected\n3. IP is correct: ') + cleanIP;
           // document.getElementById('cs').textContent = 'Offline';
           document.getElementById('camDot').classList.add('offline');
@@ -3313,8 +3480,8 @@ async function clearAnalyticsData() {
       streamBtn.disabled = true; // Disable button during connection attempt
       streamBtn.textContent = translateText('Starting...');
       
-      document.getElementById('connStatus').textContent = translateText('Connecting to stream...');
-      document.getElementById('connStatus').style.color = 'var(--on-surface-variant)';
+      const cs2 = document.getElementById('connStatus');
+      if (cs2) { cs2.textContent = translateText('Connecting to stream...'); cs2.className = 'conn-status'; }
       // Show loading state
       const placeholder = document.getElementById('streamPlaceholder');
       placeholder.style.display = 'block';
@@ -3338,8 +3505,7 @@ async function clearAnalyticsData() {
         streamImg.style.display = 'block';
 
         console.log('✅ Stream started successfully');
-        document.getElementById('connStatus').textContent = '✅ ' + translateText('Stream connected');
-        document.getElementById('connStatus').style.color = 'var(--success)';
+        if (cs2) { cs2.textContent = translateText('Stream connected'); cs2.className = 'conn-status success'; }
         streamBtn.textContent = translateText('Stop Live View');
         streamBtn.disabled = false;
         streamActive = true;
@@ -3388,8 +3554,8 @@ async function clearAnalyticsData() {
 
       if (pollIntervalId) clearInterval(pollIntervalId);
 
-      document.getElementById('connStatus').textContent = '⚠️ ' + translateText('Using capture polling');
-      document.getElementById('connStatus').style.color = 'var(--warn)';
+      const cs3 = document.getElementById('connStatus');
+      if (cs3) { cs3.textContent = translateText('Using capture polling'); cs3.className = 'conn-status warn'; }
       placeholder.textContent = translateText('Using fallback polling (capture.jpg)');
       placeholder.style.display = 'none';
       streamImg.style.display = 'block';
@@ -3583,7 +3749,7 @@ async function clearAnalyticsData() {
       document.getElementById('res').innerHTML = '<div class="rc"><div class="t">' + translateText('Analyzing') + ' ' + plantName + ' ' + translateText('with') + ' ' + activeModels.length + ' ' + translateText('AI models') + '...</div><p style="color: var(--on-surface-variant); font-size: 14px;">' + translateText('Capturing and processing image') + '</p></div>';
     }
 
-    function showMultiModelResults(results, s, imageBase64, consensusData) {
+    function showMultiModelResults(results, s, consensusData) {
       const res = document.getElementById('res');
       
       // Generate unique analysis ID FIRST
@@ -3591,20 +3757,14 @@ async function clearAnalyticsData() {
       
       // Context/sensors removed - record visual-only analysis
       const envContext = null;
-      logAnalysis(results, null, null, imageBase64, analysisId);
+      // Do not store any images with the log
+      logAnalysis(results, null, null, analysisId);
       
       // Build comparison table
       let html = '<div class="rc">';
       html += '<div class="t">' + translateText('Multi-Model Analysis') + '</div>';
       
-      // CAPTURED IMAGE DISPLAY
-      if (imageBase64) {
-        html += '<div style="background:var(--surface); border:2px solid var(--outline); padding:16px; margin:12px 0; border-radius:8px; text-align:center;">';
-        html += '<div style="font-weight:600; margin-bottom:12px; color:var(--primary); font-size:16px;">📸 ' + translateText('Captured Image') + '</div>';
-        html += '<img src="data:image/jpeg;base64,' + imageBase64 + '" style="max-width:100%; max-height:400px; border-radius:8px; box-shadow:var(--elevation-2);" alt="Captured plant image">';
-        html += '<div style="font-size:12px; color:var(--on-surface-variant); margin-top:8px;">' + translateText('Image saved to Firebase Firestore') + '</div>';
-        html += '</div>';
-      }
+
       
       // CONSENSUS DECISION BOX
       if (consensusData && consensusData.note) {
@@ -3952,8 +4112,8 @@ async function clearAnalyticsData() {
             // Skip legacy Gemini API call
             geminiRecommendation = null;
             
-            // Show results with captured image
-            showMultiModelResults(results, s, b64, consensusData);
+            // Show results (images are not stored or displayed)
+            showMultiModelResults(results, s, consensusData);
             
             // Trigger Firebase AI verification if enabled (pass all model results)
             if (aiAnalysisEnabled && aiEnabled) {
